@@ -124,12 +124,20 @@ class ReviewSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source="user.first_name",read_only=True)
     last_name = serializers.CharField(source="user.last_name",read_only=True)
     email = serializers.EmailField(source="user.email",read_only=True)
+    rating=serializers.IntegerField()
     product = ProductSerializer(read_only=True)
 
     class Meta:
         model = Review
         fields="__all__"
         read_only_fields=["user","product","is_deleted","deleted_at"]
+
+    def validate_rating(self,value):
+        if not 1<= value <=5:
+            raise serializers.ValidationError(
+                "Рейтинг должен быть числом от 1 до 5!"
+            )
+        return value
 
 
 
